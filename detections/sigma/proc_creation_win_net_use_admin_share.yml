@@ -1,0 +1,30 @@
+title: Net Use to Administrative Share
+id: c4a07e58-7f19-4b2d-9d63-5e8b1a2f6c09
+status: experimental
+description: Detects net.exe mapping an administrative share (C$, ADMIN$, IPC$), often a step before remote execution.
+references:
+  - https://attack.mitre.org/techniques/T1021/002/
+author: KhaiND1221
+date: 2026-09-25
+tags:
+  - attack.lateral_movement
+  - attack.t1021.002
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith:
+      - '\net.exe'
+      - '\net1.exe'
+  selection_use:
+    CommandLine|contains: ' use '
+  selection_share:
+    CommandLine|contains:
+      - '\admin$'
+      - '\c$'
+      - '\ipc$'
+  condition: selection_img and selection_use and selection_share
+falsepositives:
+  - Administrators managing servers through administrative shares
+level: medium

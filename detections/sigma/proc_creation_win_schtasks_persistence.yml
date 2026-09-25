@@ -1,0 +1,29 @@
+title: Scheduled Task Created for Persistence
+id: 2b6c8d13-9e40-4a75-b1f8-d07c5e3a4908
+status: experimental
+description: Detects schtasks creating a task that triggers at logon or startup, or that runs as SYSTEM.
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+author: KhaiND1221
+date: 2026-09-25
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.005
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith: '\schtasks.exe'
+  selection_create:
+    CommandLine|contains: ' /create '
+  selection_trigger:
+    CommandLine|contains:
+      - 'onlogon'
+      - 'onstart'
+      - '/ru system'
+  condition: selection_img and selection_create and selection_trigger
+falsepositives:
+  - Software deployment and maintenance tasks created by administrators
+level: medium

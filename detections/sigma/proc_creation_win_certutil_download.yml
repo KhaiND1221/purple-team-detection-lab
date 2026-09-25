@@ -1,0 +1,27 @@
+title: Certutil Used to Download a File
+id: 4d7a9f30-8c15-4e2b-b6a1-e5f02c8d7b04
+status: experimental
+description: Detects certutil.exe fetching content from a URL, a living-off-the-land ingress tool transfer.
+references:
+  - https://attack.mitre.org/techniques/T1105/
+author: KhaiND1221
+date: 2026-09-25
+tags:
+  - attack.command_and_control
+  - attack.t1105
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith: '\certutil.exe'
+  selection_action:
+    CommandLine|contains:
+      - 'urlcache'
+      - 'verifyctl'
+  selection_url:
+    CommandLine|contains: 'http'
+  condition: selection_img and selection_action and selection_url
+falsepositives:
+  - Rare administrative use of certutil to retrieve certificates or CRLs
+level: high

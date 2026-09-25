@@ -1,0 +1,28 @@
+title: Windows Event Log Cleared
+id: 8f3d1b92-4c6e-47a5-a0d9-b72e5c1f8d10
+status: experimental
+description: Detects wevtutil or PowerShell clearing event logs, an anti-forensics action.
+references:
+  - https://attack.mitre.org/techniques/T1070/001/
+author: KhaiND1221
+date: 2026-09-25
+tags:
+  - attack.defense_evasion
+  - attack.t1070.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_wevtutil:
+    Image|endswith: '\wevtutil.exe'
+    CommandLine|contains:
+      - ' cl '
+      - ' clear-log '
+  selection_ps:
+    CommandLine|contains:
+      - 'Clear-EventLog'
+      - 'Remove-EventLog'
+  condition: selection_wevtutil or selection_ps
+falsepositives:
+  - Log maintenance by administrators (should be rare and change-controlled)
+level: high

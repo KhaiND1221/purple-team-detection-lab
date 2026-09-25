@@ -1,0 +1,32 @@
+title: Suspicious Process Access to LSASS
+id: 57e1b0d9-6a3c-4c8f-a2d5-8b94f7e10c06
+status: experimental
+description: Detects processes opening LSASS with access masks typical of credential dumping tools (Sysmon event 10).
+references:
+  - https://attack.mitre.org/techniques/T1003/001/
+author: KhaiND1221
+date: 2026-09-25
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  category: process_access
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess|contains:
+      - '0x1010'
+      - '0x1410'
+      - '0x1438'
+      - '0x143a'
+      - '0x1fffff'
+  filter_main_wmi:
+    SourceImage|endswith: '\wbem\WmiPrvSE.exe'
+  filter_main_defender:
+    SourceImage|startswith: 'C:\ProgramData\Microsoft\Windows Defender\Platform\'
+    SourceImage|endswith: '\MsMpEng.exe'
+  condition: selection and not 1 of filter_main_*
+falsepositives:
+  - Security products and monitoring agents; tune filter_main_* with your own baseline
+level: high

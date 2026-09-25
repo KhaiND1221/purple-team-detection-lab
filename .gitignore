@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+# Never commit real evidence: memory images, dumps, pcaps, raw production logs
+*.dmp
+*.raw
+*.mem
+*.pcap
+*.pcapng
+*.evtx

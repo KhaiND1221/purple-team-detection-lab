@@ -1,0 +1,110 @@
+# Attack plan: one ATT&CK technique per step, executed ONLY inside the isolated lab VMs.
+# Snapshot the victim VM before each step and revert afterwards.
+#
+# status: planned | executed | detected | missed
+#   planned  = not run yet
+#   executed = run, detection outcome not recorded yet
+#   detected = run and the listed rule(s) fired (verified in the lab)
+#   missed   = run but no alert; write a rule or a hunt (see hunts/)
+# Update `status` and `notes` after each run, then re-run tools/attack_coverage.py.
+steps:
+  - id: S1
+    tactic: Execution
+    technique: T1204.002
+    name: User Execution - malicious file (Office macro spawns a shell)
+    how: Open a benign test document whose macro launches cmd.exe, or run the matching Atomic test.
+    atomic: "Invoke-AtomicTest T1204.002 -ShowDetails"
+    telemetry: Sysmon EID 1 (ParentImage is an Office application)
+    rules: [proc_creation_win_office_spawn_shell.yml]
+    status: planned
+    notes: ""
+
+  - id: S2
+    tactic: Execution
+    technique: T1059.001
+    name: PowerShell with an encoded command
+    how: Launch powershell.exe with -EncodedCommand and a harmless payload such as whoami.
+    atomic: "Invoke-AtomicTest T1059.001 -ShowDetails"
+    telemetry: Sysmon EID 1, PowerShell Operational 4104
+    rules: [proc_creation_win_powershell_encoded_command.yml]
+    status: planned
+    notes: ""
+
+  - id: S3
+    tactic: Defense Evasion
+    technique: T1218.005
+    name: Mshta executes a script from a URL or inline
+    how: Run mshta.exe against a locally hosted test .hta or a javascript inline payload.
+    atomic: "Invoke-AtomicTest T1218.005 -ShowDetails"
+    telemetry: Sysmon EID 1
+    rules: [proc_creation_win_mshta_remote_or_script.yml]
+    status: planned
+    notes: ""
+
+  - id: S4
+    tactic: Command and Control
+    technique: T1105
+    name: Ingress tool transfer with certutil
+    how: Use certutil -urlcache to download a harmless file from the attacker VM web server.
+    atomic: "Invoke-AtomicTest T1105 -ShowDetails"
+    telemetry: Sysmon EID 1, EID 3 (network connection)
+    rules: [proc_creation_win_certutil_download.yml]
+    status: planned
+    notes: ""
+
+  - id: S5
+    tactic: Credential Access
+    technique: T1003.001
+    name: LSASS memory dump with comsvcs.dll
+    how: Dump the LSASS process on the victim VM (test account only) and record which detections fire.
+    atomic: "Invoke-AtomicTest T1003.001 -ShowDetails"
+    telemetry: Sysmon EID 1, EID 10 (process access)
+    rules:
+      - proc_creation_win_rundll32_comsvcs_minidump.yml
+      - proc_access_win_lsass_suspicious_access.yml
+    status: planned
+    notes: "Expect Defender to react; decide beforehand whether real-time protection is on or off and record it."
+
+  - id: S6
+    tactic: Persistence
+    technique: T1547.001
+    name: Registry Run key persistence
+    how: Add a Run key value that starts a harmless program at logon.
+    atomic: "Invoke-AtomicTest T1547.001 -ShowDetails"
+    telemetry: Sysmon EID 13 (registry value set)
+    rules: [registry_set_win_run_key_persistence.yml]
+    status: planned
+    notes: ""
+
+  - id: S7
+    tactic: Persistence
+    technique: T1053.005
+    name: Scheduled task persistence
+    how: Create a scheduled task that runs at logon with schtasks.
+    atomic: "Invoke-AtomicTest T1053.005 -ShowDetails"
+    telemetry: Sysmon EID 1, Security 4698
+    rules: [proc_creation_win_schtasks_persistence.yml]
+    status: planned
+    notes: ""
+
+  - id: S8
+    tactic: Lateral Movement
+    technique: T1021.002
+    name: SMB administrative share access
+    how: From the first Windows VM, map C$ on the second Windows VM with net use.
+    atomic: "Invoke-AtomicTest T1021.002 -ShowDetails"
+    telemetry: Sysmon EID 1, Security 5140
+    rules: [proc_creation_win_net_use_admin_share.yml]
+    status: planned
+    notes: "Needs a second Windows VM in the lab network."
+
+  - id: S9
+    tactic: Defense Evasion
+    technique: T1070.001
+    name: Clear Windows event logs
+    how: Clear a test log with wevtutil cl, then check whether the clear itself is detected.
+    atomic: "Invoke-AtomicTest T1070.001 -ShowDetails"
+    telemetry: Sysmon EID 1, Security 1102, System 104
+    rules: [proc_creation_win_evtlog_clear.yml]
+    status: planned
+    notes: "Do this step last so it does not wipe the evidence of earlier steps."

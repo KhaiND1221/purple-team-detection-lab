@@ -1,0 +1,96 @@
+{
+  "name": "Purple Team Detection Lab - detection coverage",
+  "versions": {
+    "attack": "16",
+    "navigator": "5.1.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Score 1 = Sigma rule written. Score 2 = detection verified in the lab.",
+  "sorting": 0,
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1003.001",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_access_win_lsass_suspicious_access.yml, proc_creation_win_rundll32_comsvcs_minidump.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1021.002",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_net_use_admin_share.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1053.005",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_schtasks_persistence.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_powershell_encoded_command.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1070.001",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_evtlog_clear.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1105",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_certutil_download.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1204.002",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_office_spawn_shell.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1218.005",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_mshta_remote_or_script.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1547.001",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: registry_set_win_run_key_persistence.yml | lab: planned"
+    },
+    {
+      "techniqueID": "T1566.001",
+      "score": 1,
+      "enabled": true,
+      "comment": "rules: proc_creation_win_office_spawn_shell.yml | lab: not in plan"
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ffffff",
+      "#ffe766",
+      "#8ec843"
+    ],
+    "minValue": 0,
+    "maxValue": 2
+  },
+  "legendItems": [
+    {
+      "label": "Rule written, not yet verified in lab",
+      "color": "#ffe766"
+    },
+    {
+      "label": "Detection verified in lab",
+      "color": "#8ec843"
+    }
+  ],
+  "showTacticRowBackground": false,
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false
+}

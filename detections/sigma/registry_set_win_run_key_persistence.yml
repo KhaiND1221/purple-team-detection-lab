@@ -1,0 +1,23 @@
+title: Autorun Registry Key Modification
+id: e91f4a7c-0b25-43d6-8c7e-1a5d3f92b607
+status: experimental
+description: Detects a value written under the Run or RunOnce keys, a common user-level persistence method.
+references:
+  - https://attack.mitre.org/techniques/T1547/001/
+author: KhaiND1221
+date: 2026-09-25
+tags:
+  - attack.persistence
+  - attack.t1547.001
+logsource:
+  category: registry_set
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - '\Software\Microsoft\Windows\CurrentVersion\Run\'
+      - '\Software\Microsoft\Windows\CurrentVersion\RunOnce\'
+  condition: selection
+falsepositives:
+  - Software installers and updaters that register autostart entries
+level: medium

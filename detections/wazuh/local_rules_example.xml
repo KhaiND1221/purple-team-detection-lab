@@ -1,0 +1,17 @@
+<!--
+  EXAMPLE ONLY - not yet tested in a lab.
+  Ports proc_creation_win_rundll32_comsvcs_minidump.yml to a Wazuh custom rule.
+  Before use: check the parent rule id for Sysmon process creation in your Wazuh version's ruleset,
+  place the rule in /var/ossec/etc/rules/local_rules.xml, and validate with wazuh-logtest.
+  Custom rule ids must be 100000 or higher.
+-->
+<group name="sysmon,attack,">
+  <rule id="100100" level="12">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)comsvcs.*minidump</field>
+    <description>LSASS memory dump via comsvcs.dll MiniDump (T1003.001)</description>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+  </rule>
+</group>

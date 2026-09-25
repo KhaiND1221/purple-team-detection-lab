@@ -1,0 +1,21 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Validate Sigma rules and attack plan
+        run: python tools/attack_coverage.py --check
+      - name: Parse rules with the official pySigma parser
+        run: python tools/validate_sigma.py
+      - name: Smoke-test the triage script on the synthetic sample
+        run: python automation/triage_alert.py automation/samples/wazuh_alert_lsass_dump.json

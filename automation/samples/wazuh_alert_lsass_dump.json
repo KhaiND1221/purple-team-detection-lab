@@ -1,0 +1,28 @@
+{
+  "_note": "SYNTHETIC SAMPLE used only to test triage_alert.py. Not a real incident. Replace with real alerts from your lab.",
+  "timestamp": "2026-10-03T21:14:07.412+0700",
+  "rule": {
+    "level": 12,
+    "description": "LSASS memory dump via comsvcs.dll MiniDump (T1003.001)",
+    "id": "100100",
+    "mitre": {
+      "id": ["T1003.001"],
+      "tactic": ["Credential Access"],
+      "technique": ["LSASS Memory"]
+    },
+    "groups": ["sysmon", "attack"]
+  },
+  "agent": { "id": "001", "name": "WIN10-LAB", "ip": "192.168.56.20" },
+  "data": {
+    "win": {
+      "system": { "eventID": "1" },
+      "eventdata": {
+        "image": "C:\\Windows\\System32\\rundll32.exe",
+        "commandLine": "rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 672 C:\\Windows\\Temp\\l.dmp full",
+        "parentImage": "C:\\Windows\\System32\\cmd.exe",
+        "user": "LAB\\victim",
+        "hashes": "MD5=d41d8cd98f00b204e9800998ecf8427e,SHA256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  }
+}

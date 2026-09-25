@@ -6,6 +6,53 @@ An end-to-end SOC Tier 3 exercise in a home lab: **emulate an ATT&CK-mapped atta
 > Rules, attack plan, tooling, playbook and report template are in place and pass the local validation checks in `tools/`.
 > Every attack step is still `planned` in [`attack/plan.yaml`](attack/plan.yaml). Nothing in this repo claims a detection has been verified until a step is marked `detected` after a real run.
 
+## Getting started: clone and continue
+
+Requirements: [Git](https://git-scm.com/) and Python 3.10 or newer. The lab VMs are only needed when you run the attack steps.
+
+```bash
+git clone https://github.com/KhaiND1221/purple-team-detection-lab.git
+cd purple-team-detection-lab
+
+python -m venv .venv
+source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+python tools/attack_coverage.py --check    # should print: OK
+python tools/validate_sigma.py             # should print: OK
+```
+
+If both checks print `OK`, the environment works and you can continue from the roadmap below.
+
+### Roadmap (tick items off as you finish them)
+
+- [ ] Build the lab: VMs, network isolation, Sysmon, Wazuh agent ([`lab/README.md`](lab/README.md))
+- [ ] Confirm Sysmon events reach the Wazuh dashboard before attacking anything
+- [ ] Run steps S1-S9 one at a time, then set `status` and `notes` in [`attack/plan.yaml`](attack/plan.yaml)
+- [ ] For every `missed` step: write or tune a rule in `detections/sigma/`, or add a hunt in `hunts/`
+- [ ] Port the rules that matter to Wazuh and test them with `wazuh-logtest` (`detections/wazuh/`)
+- [ ] Run hunts H1-H5 and fill the hunt log ([`hunts/hunt-hypotheses.md`](hunts/hunt-hypotheses.md))
+- [ ] Regenerate the ATT&CK Navigator layer and fill in the **Results** table below with measured numbers
+- [ ] Write an incident report in `reports/` from the template
+- [ ] Enable CI by copying `ci/validate.yml` to `.github/workflows/validate.yml`
+- [ ] Add your own screenshots (dashboards, alerts) under a `docs/` folder and link them here
+
+### Everyday Git flow
+
+```bash
+git pull                                   # get the latest
+git checkout -b run-s5-lsass               # one branch per step or topic
+# ...edit files, run the checks...
+python tools/attack_coverage.py --check
+git add -A
+git commit -m "S5: record LSASS dump detection result"
+git push -u origin run-s5-lsass            # then open a pull request, or merge into main
+```
+
+Never commit real evidence (memory dumps, pcaps, raw logs); `.gitignore` already blocks the common file types.
+
+---
+
 ## Goal
 
 Show the Tier 3 loop, not just alert triage:
